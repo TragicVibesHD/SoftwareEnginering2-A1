@@ -4,6 +4,7 @@ from flask_uploads import DOCUMENTS, IMAGES, TEXT, UploadSet, configure_uploads
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
+from App.controllers.competition_controller import create_competition, import_results, get_competitions, get_competition_results
 
 
 from App.database import init_db
@@ -38,3 +39,4 @@ def create_app(overrides={}):
         return render_template('401.html', error=error), 401
     app.app_context().push()
     return app
+
