@@ -8,7 +8,6 @@ from App.models import *
 from App.main import *
 from App.controllers import *
 
-# This commands file allows you to create convenient CLI commands for testing controllers
 app = create_app()
 migrate = get_migrate(app)
 
@@ -67,9 +66,9 @@ def user_tests_command(type):
 app.cli.add_command(test_cli)
 
 '''
-Moderator Commands
+Student Commands
 '''
-mod_cli = AppGroup('moderator', help='Moderator commands')
+mod_cli = AppGroup('student', help='Student commands')
 
 @mod_cli.command('create_competition_cli')
 def create_competition_cli():
@@ -111,21 +110,7 @@ def import_results_from_file_cli(competition_id, file_path):
     try:
         competition_id = int(competition_id)
         response = import_results_from_file(competition_id, file_path)
-        
-        # Unpack the response
-        if isinstance(response, tuple):
-            response_body, status_code = response
-        else:
-            response_body = response
-            status_code = 200  # Assume 200 if not specified
-        
-        # Extract data from the response
-        if isinstance(response_body, str):
-            data = response_body
-        else:
-            data = response_body.get_json()
-        
-        print(f"Response: {data}, Status Code: {status_code}")
+        print_response(response)
     except Exception as e:
         print(f"Error: {str(e)}")
 
