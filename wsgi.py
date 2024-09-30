@@ -83,10 +83,21 @@ def create_competition_cli():
 @student_cli.command('import_results_cli')
 def import_results_cli():
     try:
-        competition_id = int(input("Enter competition ID: "))
+        competition_input = input("Enter competition ID or name: ").strip()
+        use_name = not competition_input.isdigit()
+
+        if not use_name:
+            competition_input = int(competition_input)
+
         num_results = int(input("Enter number of results to import: "))
-        results_data = [{'student_username': input("Enter student username: "), 'score': float(input("Enter score: "))} for _ in range(num_results)]
-        response = import_results(competition_id, {'results': results_data})
+        results_data = [
+            {
+                'student_username': input(f"Enter student username for result {i+1}: "),
+                'score': float(input(f"Enter score for result {i+1}: "))
+            } for i in range(num_results)
+        ]
+
+        response = import_results(competition_input, {'results': results_data}, use_name=use_name)
         print_response(response)
     except ValueError:
         print("Invalid input. Please enter the correct data types.\n")

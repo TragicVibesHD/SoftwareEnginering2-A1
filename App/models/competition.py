@@ -1,6 +1,7 @@
 from App.database import db
 
 class Competition(db.Model):
+ 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     date = db.Column(db.Date, nullable=False)
@@ -14,6 +15,7 @@ class Competition(db.Model):
         self.description = description
 
     def to_dict(self):
+
         return {
             'id': self.id,
             'name': self.name,
