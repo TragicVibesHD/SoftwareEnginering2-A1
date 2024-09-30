@@ -1,3 +1,31 @@
+Initializing the Database
+
+$ flask init
+
+Creating a competition
+
+$flask student create_competition_cli
+
+Importing data from manual keybaord input
+
+$flask student import_results_cli
+
+Importing results from file
+
+$flask student import_results_from_file_cli <competition_id_or_name> <file_path>
+Example 
+flask student import_results_from_file_cli 1 results.csv
+
+View competitions 
+
+flask student view_competitions_cli
+
+View competition and the results
+
+flask student view_competition_results_cli
+
+
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/flaskmvc)
 <a href="https://render.com/deploy?repo=https://github.com/uwidcit/flaskmvc">
   <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render">
