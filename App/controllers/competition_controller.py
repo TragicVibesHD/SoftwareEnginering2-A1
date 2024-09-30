@@ -14,7 +14,7 @@ def create_competition(name, date, description=None):
         db.session.add(competition)
         db.session.commit()
         return jsonify({'message': 'Competition created successfully!', 'competition': competition.to_dict()})
-    except ValueError as ve:
+    except ValueError:
         return jsonify({'error': 'Invalid date format. Please use YYYY-MM-DD.'}), 400
     except Exception as e:
         db.session.rollback()
@@ -25,20 +25,19 @@ def import_results(competition_id, data):
         competition = Competition.query.get(competition_id)
         if not competition:
             return jsonify({'error': 'Competition not found.'}), 404
-        
+
         results = data.get('results', [])
         for result_data in results:
             result = Result(
                 competition_id=competition_id,
-                student_id=result_data['student_id'],
-                score=result_data['score'],
-                rank=result_data['rank']
+                student_username=result_data['student_username'],
+                score=result_data['score']
             )
             db.session.add(result)
         db.session.commit()
         return jsonify({'message': 'Results imported successfully!'}), 200
     except KeyError as ke:
-        return jsonify({'error': f'Missing key in input data: {str(ke)}'}), 400
+        return jsonify({'error': f'Missing key in input data: {ke}'}), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
@@ -52,39 +51,48 @@ def import_results_from_file(competition_id, file_path):
         filename = secure_filename(file_path)
         if not os.path.exists(filename):
             return jsonify({'error': 'File not found. Please provide a valid file path.'}), 400
-        
+
+        # Clear existing results
+        Result.query.filter_by(competition_id=competition_id).delete()
+        db.session.commit()
+
         results_data = []
         with open(filename, 'r') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
                 try:
-                    result_data = {
-                        'student_id': int(row['student_id']),
-                        'score': float(row['score']),
-                        'rank': int(row['rank'])
-                    }
-                    results_data.append(result_data)
-                except ValueError as ve:
-                    return jsonify({'error': f'Invalid value in CSV file: {str(ve)}'}), 400
-                except KeyError as ke:
-                    return jsonify({'error': f'Missing key in CSV file: {str(ke)}'}), 400
-        
-        response = import_results(competition_id, {'results': results_data})
-        return response
+                    results_data.append({
+                        'student_username': row['student_username'],
+                        'score': float(row['score'])
+                    })
+                except (ValueError, KeyError) as e:
+                    return jsonify({'error': f'Invalid value in CSV file: {e}'}), 400
+
+        return import_results(competition_id, {'results': results_data})
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 400
 
 def get_competitions():
     competitions = Competition.query.all()
     return jsonify([comp.to_dict() for comp in competitions])
 
-def get_competition_results(competition_id):
+def get_competition_results(competition_id=None, competition_name=None):
     try:
-        competition = Competition.query.get(competition_id)
+        competition = None
+        if competition_id:
+            competition = Competition.query.get(competition_id)
+        elif competition_name:
+            competition = Competition.query.filter_by(name=competition_name).first()
+
         if not competition:
             return jsonify({'error': 'Competition not found.'}), 404
-        
-        results = Result.query.filter_by(competition_id=competition_id).all()
-        return jsonify([res.to_dict() for res in results])
+
+        results = Result.query.filter_by(competition_id=competition.id).order_by(Result.score.desc()).all()
+        return jsonify({
+            'competition_id': competition.id,
+            'competition_name': competition.name,
+            'results': [res.to_dict() for res in results]
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 400

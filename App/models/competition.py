@@ -20,5 +20,3 @@ class Competition(db.Model):
             'date': self.date.isoformat(),
             'description': self.description
         }
-
-
