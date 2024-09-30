@@ -1,29 +1,32 @@
-Initializing the Database
-
+# Initalizing database
+```bash
 $ flask init
+```
 
-Creating a competition
-
+# Creating a competition
+```bash
 $flask student create_competition_cli
-
-Importing data from manual keybaord input
-
+```
+# Importing data from manual keybaord input
+```bash
 $flask student import_results_cli
-
-Importing results from file
-
+```
+# Importing results from file
+```bash
 $flask student import_results_from_file_cli <competition_id_or_name> <file_path>
-Example 
+```
+# Example 
+```bash
 flask student import_results_from_file_cli 1 results.csv
-
-View competitions 
-
+```
+# View competitions 
+```bash
 flask student view_competitions_cli
-
-View competition and the results
-
+```
+# View competition and the results
+```bash
 flask student view_competition_results_cli
-
+```
 
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/flaskmvc)
