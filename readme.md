@@ -1,6 +1,6 @@
 # Initalizing database
 ```bash
-$ flask init
+$flask init
 ```
 
 # Creating a competition
@@ -17,15 +17,15 @@ $flask student import_results_from_file_cli <competition_id_or_name> <file_path>
 ```
 # Example 
 ```bash
-flask student import_results_from_file_cli 1 results.csv
+$flask student import_results_from_file_cli 1 results.csv
 ```
 # View competitions 
 ```bash
-flask student view_competitions_cli
+$flask student view_competitions_cli
 ```
 # View competition and the results
 ```bash
-flask student view_competition_results_cli
+$flask student view_competition_results_cli
 ```
 
 
